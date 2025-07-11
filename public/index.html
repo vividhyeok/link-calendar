@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>월간 캘린더</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="layout-container">
+    <div class="calendar-and-popup-wrapper">
+      <div class="main-calendar-container">
+        <div id="app">
+          <header>
+            <div class="calendar-header-top">
+              <div class="calendar-year-month">
+                <span class="year"></span>
+                <span class="month"></span>
+              </div>
+              <div class="calendar-event-list">
+                <div class="clip-decoration clip-top-left"></div>
+                <ul>
+                  <!-- Events will be populated here by JS -->
+                </ul>
+                <div class="clip-decoration clip-bottom-right"></div>
+              </div>
+            </div>
+          </header>
+          
+          <main>
+            <div id="calendar" class="calendar-grid"></div>
+          </main>
+        </div>
+      </div>
+
+      </div>
+  </div>
+
+  <!-- 통합 팝업 -->
+  <div class="event-popup-overlay" id="event-popup-overlay">
+    <div class="event-popup">
+      <div class="event-popup-content">
+        <h2 id="event-title-popup"></h2>
+        <p id="event-desc-popup"></p>
+        <button onclick="closeEventDetails()">닫기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Action Button -->
+  <button class="fab-save-image" id="fab-save-image" onclick="downloadCalendarImage()">이미지 저장</button>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script defer src="calendar.js"></script>
+</body>
+</html>

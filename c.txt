@@ -1,0 +1,48 @@
+Vercel 배포를 위한 단계별 안내서입니다.
+
+**1. Git 저장소 초기화 및 연동**
+
+   - 현재 프로젝트 폴더가 Git 저장소가 아니라면, 아래 명령어를 터미널에 입력하여 Git 저장소로 만드세요.
+     ```
+     git init
+     ```
+   - GitHub, GitLab 등 원격 저장소에 새로운 저장소를 생성하세요.
+   - 아래 명령어를 터미널에 입력하여 로컬 저장소와 원격 저장소를 연결하세요. (YOUR_REPOSITORY_URL을 실제 원격 저장소 주소로 변경하세요.)
+     ```
+     git remote add origin YOUR_REPOSITORY_URL
+     ```
+
+**2. 코드 변경사항 커밋 및 푸시**
+
+   - 아래 명령어를 순서대로 입력하여 프로젝트의 모든 변경사항을 원격 저장소에 올리세요.
+     ```
+     git add .
+     git commit -m "Initial commit for Vercel deployment"
+     git push origin main
+     ```
+   - (참고: 기본 브랜치 이름이 'main'이 아닌 'master'일 경우, `git push origin master`로 입력하세요.)
+
+**3. Vercel 프로젝트 생성 및 설정**
+
+   - [Vercel 웹사이트](https://vercel.com/)에 접속하여 GitHub 또는 사용하는 Git 호스팅 서비스 계정으로 로그인/회원가입하세요.
+   - 대시보드에서 'Add New...' > 'Project'를 클릭하세요.
+   - 'Import Git Repository' 섹션에서 방금 푸시한 원격 저장소를 선택하고 'Import' 버튼을 누르세요.
+
+**4. Notion API 키 등 환경변수 설정**
+
+   - 프로젝트를 선택한 후, 'Configure Project' 화면이 나타납니다.
+   - 'Environment Variables' 섹션을 찾아 펼치세요.
+   - 로컬 프로젝트의 `.env` 파일에 있던 모든 키-값 쌍을 여기에 추가해야 합니다. (예: `NOTION_API_KEY`, `NOTION_DATABASE_ID` 등)
+   - **매우 중요:** 이 과정은 Notion API 키와 같은 민감한 정보를 코드와 분리하여 안전하게 관리하기 위해 필수적입니다.
+
+**5. 빌드 및 배포 설정**
+
+   - 'Build and Output Settings' 섹션은 대부분의 Node.js 프로젝트의 경우 Vercel이 자동으로 감지하므로 특별히 수정할 필요가 없을 수 있습니다.
+   - 만약 `package.json`에 `build`나 `start` 스크립트가 있다면, Vercel이 이를 자동으로 인식하여 사용합니다.
+   - 모든 설정이 완료되었으면 'Deploy' 버튼을 클릭하세요.
+
+**6. 배포 확인**
+
+   - 배포가 시작되며, 몇 분 정도 소요될 수 있습니다.
+   - 배포가 완료되면 Vercel 대시보드에서 제공하는 고유 URL에 접속하여 프로젝트가 정상적으로 작동하는지 확인하세요.
+   - 만약 오류가 발생하면, 대시보드의 'Logs' 탭에서 원인을 확인할 수 있습니다.

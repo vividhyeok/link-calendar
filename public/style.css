@@ -1,0 +1,702 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@700&display=swap');
+/* S-Core Dream fonts - assuming local files or CDN. User needs to provide these. */
+@font-face {
+    font-family: 'S-Core Dream 4';
+    src: url('fonts/S-CoreDream-4Regular.woff2') format('woff2'),
+         url('fonts/S-CoreDream-4Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'S-Core Dream 7';
+    src: url('fonts/S-CoreDream-7Bold.woff2') format('woff2'),
+         url('fonts/S-CoreDream-7Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+}
+
+body {
+  font-family: 'S-Core Dream 4', sans-serif;
+  background-color: white;
+  color: #333;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Layout container for calendar and sidebar */
+.layout-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+}
+
+.calendar-and-popup-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.main-calendar-container {
+  position: relative;
+  width: min(100vh, 100vw);
+  height: min(100vh, 100vw);
+  aspect-ratio: 1 / 1; /* 정사각형 비율 유지 */
+  background-color: #0c7b0c !important;
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  container-type: inline-size;
+  container-name: calendar-container;
+}
+
+#app {
+  position: relative;
+  width: calc(100% - 40px);
+  height: calc(100% - 40px);
+  aspect-ratio: 1 / 1; /* 정사각형 비율 유지 */
+  background: #fff;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  padding: 30px;
+  box-sizing: border-box;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  container-type: inline-size;
+  container-name: app-container;
+  margin: 20px;
+}
+
+@media (max-width: 768px) {
+  .main-calendar-container {
+    width: min(100vh, 100vw);
+    height: min(100vh, 100vw);
+    background-color: #0c7b0c !important;
+  }
+
+  #calendar {
+    grid-template-rows: auto repeat(6, 1fr); /* Changed to 1fr for proportional scaling */
+  }
+
+  .day, .calendar-cell {
+    /* height: 70px; */
+    /* min-height: 70px; */
+    /* max-height: 70px; */
+    /* font-size: 16px; */
+    /* padding: 6px; */
+  }
+
+  .day .date, .calendar-cell .date-number {
+    font-size: 14px;
+    font-family: 'S-Core Dream 7', sans-serif;
+    top: 8.4px;
+    left: 8.4px;
+  }
+
+  .calendar-cell .event {
+    min-height: 22.4px;
+    line-height: 1.2;
+    font-size: 18px;
+    left: 8.4px;
+    right: 8.4px;
+    padding: 1.4px 5.6px;
+    top: 45px; /* 날짜 숫자와 더 충분한 간격 확보 */
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    text-align: left;
+    display: block;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .calendar-cell .event:nth-of-type(1) {
+    top: 30px; /* 첫 번째 이벤트 - 날짜 숫자 바로 아래 */
+  }
+
+  .calendar-cell .event:nth-of-type(2) {
+    top: 50px; /* 두 번째 이벤트 */
+  }
+
+  .calendar-cell .event.single-day:nth-of-type(1) {
+    top: 30px; /* 첫 번째 single-day 이벤트 */
+  }
+
+  .calendar-cell .event.single-day:nth-of-type(2) {
+    top: 50px; /* 두 번째 single-day 이벤트 */
+  }
+
+  .calendar-cell .event.continuous-start {
+    right: -1.4px;
+    padding-right: 8.4px;
+    border-radius: 43px 2px 2px 43px;
+  }
+
+  .calendar-cell .event.continuous-middle {
+    left: -1.4px;
+    right: -1.4px;
+    padding-left: 8.4px;
+    padding-right: 8.4px;
+    border-radius: 2px;
+  }
+
+  .calendar-cell .event.continuous-end {
+    left: -1.4px;
+    padding-left: 8.4px;
+    border-radius: 2px 43px 43px 2px;
+  }
+}
+
+
+/* Header styling */
+header {
+  text-align: left;
+  border-bottom: none;
+  padding-bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.calendar-header-top {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.calendar-year-month {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex: 0 0 auto;
+  margin-right: 20px;
+}
+
+.calendar-year-month .year {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 3.5vw; /* Adjusted for vw */
+  font-weight: bold;
+  color: #0c7b0c;
+  line-height: 1.0;
+}
+
+.calendar-year-month .month {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 8.4vw; /* Adjusted for vw */
+  font-weight: bold;
+  color: #0c7b0c;
+  line-height: 0.8;
+  margin-top: -0.7vw; /* Adjusted for vw */
+}
+
+.calendar-event-list {
+  position: relative;
+  border: 5px dashed #d3eed0;
+  border-radius: 24px;
+  background-color: #ffffff;
+  padding: 0.7vw 2.1vw; /* Adjusted for vw */
+  font-size: 1.4vw; /* 2px 더 크게 조정 */
+  font-family: 'S-Core Dream 4', sans-serif;
+  color: #333;
+  flex-grow: 1;
+  height: 9.8vw; /* Adjusted for vw */
+  min-height: 9.8vw; /* Adjusted for vw */
+  max-height: 9.8vw; /* Adjusted for vw */
+  overflow: visible;
+  box-sizing: border-box;
+}
+
+.calendar-event-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  height: 100%;
+}
+
+.calendar-event-list li {
+  margin-bottom: 0px;
+  line-height: 1.4;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.clip-decoration {
+  position: absolute;
+  width: 4.2vw; /* Adjusted for vw */
+  height: 4.2vw; /* Adjusted for vw */
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  z-index: 10;
+}
+
+.clip-top-left {
+  top: -2.1vw; /* Adjusted for vw */
+  left: -2.1vw; /* Adjusted for vw */
+  background-image: url('images/003.png');
+}
+
+.clip-bottom-right {
+  bottom: -2.1vw; /* Adjusted for vw */
+  right: -2.1vw; /* Adjusted for vw */
+  background-image: url('images/003.png');
+}
+
+/* Calendar grid styling */
+main {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  margin-top: 20px;
+}
+
+#calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: auto 1fr 1fr 1fr 1fr 1fr 1fr;
+  gap: 1px;
+  height: auto;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.day-name {
+  text-align: center;
+  font-weight: bold;
+  padding-bottom: 0.7vw; /* Adjusted for vw */
+  font-size: 1vw; /* Adjusted for vw */
+  font-family: 'S-Core Dream 7', sans-serif;
+  width: 100%;
+  box-sizing: border-box;
+}
+.day-name:nth-child(1) { color: #d94925; } /* Sunday */
+.day-name:nth-child(7) { color: #3a4ca8; } /* Saturday */
+.day-name:nth-child(n+2):nth-child(-n+6) { color: black; } /* Weekdays */
+
+.day, .calendar-cell {
+  background-color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 0.56vw; /* Adjusted for vw */
+  display: flex;
+  flex-direction: column;
+  gap: 2.8px;
+  font-size: 0.9vw; /* Adjusted for vw */
+  font-family: 'S-Core Dream 7', sans-serif;
+  overflow: hidden;
+  transition: all 0.2s ease;
+  height: 6.0vw; /* 세로 길이 조금 줄임 */
+  min-height: 5.8vw; /* 세로 길이 조금 줄임 */
+  max-height: 6.2vw; /* 세로 길이 조금 줄임 */
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.day:hover, .calendar-cell:hover {
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.1), 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.day .date, .calendar-cell .date-number {
+  font-weight: bold;
+  font-family: 'S-Core Dream 7', sans-serif;
+  color: #444;
+  margin: 0;
+  text-align: left;
+  font-size: 1.2vw; /* Adjusted for vw */
+  position: absolute;
+  top: 0.56vw; /* Adjusted for vw */
+  left: 0.56vw; /* Adjusted for vw */
+}
+
+.day.empty, .calendar-cell.empty {
+  background-color: #f9f9f9;
+}
+
+.event {
+  padding: 0.21vw 0.42vw; /* Adjusted for vw */
+  border-radius: 100px;
+  color: #333;
+  font-size: 0.9vw; /* Adjusted for vw */
+  font-family: 'S-Core Dream 4', sans-serif;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.calendar-cell .event {
+  position: absolute;
+  left: 0.56vw; /* Adjusted for vw */
+  right: 0.56vw; /* Adjusted for vw */
+  min-height: 1.68vw; /* Adjusted for vw */
+  line-height: 1.0;
+  padding: 0.07vw 0.28vw; /* Adjusted for vw */
+  margin: 0;
+  border-radius: 12px;
+  color: #333;
+  font-size: 1.1vw; /* Adjusted for vw */
+  font-family: 'S-Core Dream 4', sans-serif;
+  cursor: pointer;
+  overflow: hidden;
+  text-align: left;
+  box-sizing: border-box;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
+  padding-left: 0.5vw;
+  padding-right: 0.5vw;
+}
+
+.calendar-cell .event:nth-of-type(1) {
+  top: 2.8vw; /* 첫 번째 이벤트 위치 - 날짜 숫자 바로 아래 */
+}
+
+.calendar-cell .event:nth-of-type(2) {
+  top: 4.2vw; /* 두 번째 이벤트 위치 */
+}
+
+.calendar-cell .event.single-day:nth-of-type(1) {
+  top: 2.8vw; /* 첫 번째 single-day 이벤트 위치 */
+}
+
+.calendar-cell .event.single-day:nth-of-type(2) {
+  top: 4.2vw; /* 두 번째 single-day 이벤트 위치 */
+}
+
+.calendar-cell .event.continuous-start {
+  border-radius: 12px 4px 4px 12px;
+  right: -1px; /* 셀 경계까지 확장 */
+  margin-right: 0;
+  padding-right: 8px;
+}
+
+.calendar-cell .event.continuous-middle {
+  border-radius: 4px;
+  left: -1px; /* 셀 경계까지 확장 */
+  right: -1px;
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.calendar-cell .event.continuous-end {
+  border-radius: 4px 12px 12px 4px;
+  left: -1px; /* 셀 경계까지 확장 */
+  margin-left: 0;
+  padding-left: 8px;
+}
+
+/* Floating Action Button (FAB) for Image Save */
+.fab-save-image {
+  position: fixed;
+  bottom: 42px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 224px;
+  height: 70px;
+  background: linear-gradient(135deg, #0c7b0c 0%, #0a6b0a 100%);
+  color: white;
+  border: none;
+  border-radius: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+  font-weight: bold;
+  font-family: 'S-Core Dream 7', sans-serif;
+  cursor: pointer;
+  box-shadow: 
+    0 4px 12px rgba(12, 123, 12, 0.3),
+    0 2px 4px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+  z-index: 200;
+  text-align: center;
+  line-height: 1.2;
+  box-sizing: border-box;
+  border: 2px solid rgba(255,255,255,0.2);
+}
+
+.fab-save-image:hover {
+  transform: translateX(-50%) translateY(-2px) scale(1.05);
+  box-shadow: 
+    0 6px 16px rgba(12, 123, 12, 0.4),
+    0 4px 8px rgba(0,0,0,0.15);
+}
+
+.fab-save-image.hidden {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(-50%) scale(0.8);
+}
+
+/* Initial message styling */
+#app > div[style] {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+/* Container Query 지원 */
+#app {
+  container-type: inline-size;
+  container-name: app-container;
+  width: 90%;
+  height: 90%;
+}
+
+/* Container Query 기반 반응형 스타일 */
+@container app-container (max-width: 400px) {
+  .calendar-cell .event {
+    font-size: 16px !important;
+    line-height: 1.0;
+    padding: 1.4px 5.6px;
+    margin: 0;
+    min-height: 22.4px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    text-align: left;
+    display: block;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+  
+  .calendar-cell .event:nth-of-type(1) {
+    top: 25px; /* 첫 번째 이벤트 - 날짜 숫자 바로 아래 */
+  }
+  
+  .calendar-cell .event:nth-of-type(2) {
+    top: 45px; /* 두 번째 이벤트 */
+  }
+  
+  .calendar-cell .event.single-day:nth-of-type(1) {
+    top: 25px; /* 첫 번째 single-day 이벤트 */
+  }
+  
+  .calendar-cell .event.single-day:nth-of-type(2) {
+    top: 45px; /* 두 번째 single-day 이벤트 */
+  }
+  
+  .calendar-cell .event.multi-line-1 {
+    margin-bottom: 0;
+  }
+  
+  .calendar-cell .event.multi-line-2 {
+    margin-top: 0;
+  }
+  
+  .day .date, .calendar-cell .date-number {
+    font-size: 16.8px;
+  }
+}
+
+@container app-container (min-width: 401px) and (max-width: 600px) {
+  .calendar-cell .event {
+    font-size: 17px !important;
+    line-height: 1.0;
+    padding: 2.8px 5.6px;
+    margin: 0;
+    min-height: 23.8px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    text-align: left;
+    display: block;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+  
+  .calendar-cell .event:nth-of-type(1) {
+    top: 27px; /* 첫 번째 이벤트 - 날짜 숫자 바로 아래 */
+  }
+  
+  .calendar-cell .event:nth-of-type(2) {
+    top: 47px; /* 두 번째 이벤트 */
+  }
+  
+  .calendar-cell .event.single-day:nth-of-type(1) {
+    top: 27px; /* 첫 번째 single-day 이벤트 */
+  }
+  
+  .calendar-cell .event.single-day:nth-of-type(2) {
+    top: 47px; /* 두 번째 single-day 이벤트 */
+  }
+  
+  .day .date, .calendar-cell .date-number {
+    font-size: 19.6px;
+  }
+}
+
+@container app-container (min-width: 601px) {
+  .calendar-cell .event {
+    font-size: 18px !important;
+    line-height: 1.0;
+    padding: 1.4px 5.6px;
+    margin: 0;
+    min-height: 25.2px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    text-align: left;
+    display: block;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+  
+  .calendar-cell .event:nth-of-type(1) {
+    top: 29px; /* 첫 번째 이벤트 - 날짜 숫자 바로 아래 */
+  }
+  
+  .calendar-cell .event:nth-of-type(2) {
+    top: 49px; /* 두 번째 이벤트 */
+  }
+  
+  .calendar-cell .event.single-day:nth-of-type(1) {
+    top: 29px; /* 첫 번째 single-day 이벤트 */
+  }
+  
+  .calendar-cell .event.single-day:nth-of-type(2) {
+    top: 49px; /* 두 번째 single-day 이벤트 */
+  }
+  
+  .day .date, .calendar-cell .date-number {
+    font-size: 22.4px;
+  }
+}
+
+
+
+/* Event Popup Styling */
+.event-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.event-popup {
+  background-color: #fff;
+  padding: 42px;
+  border-radius: 15px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  max-width: 700px;
+  width: 90%;
+  text-align: center;
+  transform: translateY(20px);
+  transition: transform 0.3s ease;
+}
+
+.event-popup-content h2 {
+  color: #0c7b0c;
+  margin-bottom: 21px;
+  font-size: 28px;
+  font-family: 'S-Core Dream 7', sans-serif;
+}
+
+.event-popup-content p {
+  color: #555;
+  font-size: 18px;
+  line-height: 1.6;
+  margin-bottom: 35px;
+  font-family: 'S-Core Dream 4', sans-serif;
+  text-align: left;
+}
+
+.event-popup-content .event-item {
+  margin-bottom: 15px;
+  padding: 15px;
+  border-left: 4px solid #0c7b0c;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  text-align: left;
+}
+
+.event-popup-content .event-item h4 {
+  margin: 0 0 8px 0;
+  color: #333;
+  font-size: 20px;
+  font-family: 'S-Core Dream 7', sans-serif;
+}
+
+.event-popup-content .event-item .event-type {
+  margin: 0 0 5px 0;
+  color: #666;
+  font-size: 14px;
+  font-family: 'S-Core Dream 4', sans-serif;
+  font-weight: normal;
+}
+
+.event-popup-content .event-item .event-description {
+  margin: 8px 0 0 0;
+  color: #555;
+  font-size: 16px;
+  font-family: 'S-Core Dream 4', sans-serif;
+  line-height: 1.4;
+}
+
+.event-popup-content button {
+  background-color: #0c7b0c;
+  color: white;
+  border: none;
+  padding: 16.8px 35px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  transition: background-color 0.2s ease;
+}
+
+.event-popup-content button:hover {
+  background-color: #0a6b0a;
+}
+
+/* When popup is open */
+body.popup-open {
+  overflow: hidden; /* 배경 스크롤 방지 */
+}
+
+body.popup-open .event-popup-overlay {
+  opacity: 1;
+  visibility: visible;
+}
+
+body.popup-open .event-popup {
+  transform: translateY(0);
+}
